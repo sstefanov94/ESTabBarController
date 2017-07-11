@@ -2,7 +2,7 @@
 //  ESTabBarController.swift
 //
 //  Created by Vincent Li on 2017/2/8.
-//  Copyright (c) 2013-2017 ESTabBarController (https://github.com/eggswift/ESTabBarController)
+//  Copyright (c) 2013-2016 ESTabBarController (https://github.com/eggswift/ESTabBarController)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -94,7 +94,9 @@ open class ESTabBarItem: UITabBarItem {
         self.setTitle(title, image: image, selectedImage: selectedImage, tag: tag)
     }
     public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        self.contentView = ExampleHighlightableContentView()
+        self.setTitle(nil, image: image, selectedImage: selectedImage, tag: tag)
     }
     
     open func setTitle(_ title: String? = nil, image: UIImage? = nil, selectedImage: UIImage? = nil, tag: Int = 0) {
@@ -103,5 +105,125 @@ open class ESTabBarItem: UITabBarItem {
         self.selectedImage = selectedImage
         self.tag = tag
     }
+}
+
+class ExampleBasicContentView: ESTabBarItemContentView {
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        textColor = UIColor.init(white: 175.0 / 255.0, alpha: 1.0)
+        highlightTextColor = UIColor.init(red: 254/255.0, green: 73/255.0, blue: 42/255.0, alpha: 1.0)
+        iconColor = UIColor.init(white: 175.0 / 255.0, alpha: 1.0)
+        highlightIconColor = UIColor.init(red: 254/255.0, green: 73/255.0, blue: 42/255.0, alpha: 1.0)
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+}
+
+class ExampleBouncesContentView: ExampleBasicContentView {
+    
+    public var duration = 0.3
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        textColor = UIColor.white
+        highlightTextColor = UIColor.white
+        iconColor = UIColor.white
+        highlightIconColor = UIColor.white
+        
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func selectAnimation(animated: Bool, completion: (() -> ())?) {
+        self.bounceAnimation()
+        completion?()
+    }
+    
+    override func reselectAnimation(animated: Bool, completion: (() -> ())?) {
+        self.bounceAnimation()
+        completion?()
+    }
+    
+    func bounceAnimation() {
+        let impliesAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
+        impliesAnimation.values = [1.0 ,1.2, 1.0, 1.15, 0.95, 1.02, 1.0]
+        impliesAnimation.duration = duration * 2
+        impliesAnimation.calculationMode = kCAAnimationCubic
+        imageView.layer.add(impliesAnimation, forKey: nil)
+    }
+}
+
+class ExampleHighlightableContentView: ExampleBasicContentView {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        let transform = CGAffineTransform.identity
+        imageView.transform = transform.scaledBy(x: 1, y: 1)
+        
+        textColor = UIColor.white
+        highlightTextColor = UIColor.white
+        iconColor = UIColor.white
+        highlightIconColor = UIColor.white
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func highlightAnimation(animated: Bool, completion: (() -> ())?) {
+        UIView.beginAnimations("small", context: nil)
+        UIView.setAnimationDuration(0.2)
+        let transform = imageView.transform.scaledBy(x: 0.7, y: 0.7)
+        imageView.transform = transform
+        UIView.commitAnimations()
+        completion?()
+    }
+    
+    override func dehighlightAnimation(animated: Bool, completion: (() -> ())?) {
+        UIView.beginAnimations("big", context: nil)
+        UIView.setAnimationDuration(0.2)
+        let transform = CGAffineTransform.identity
+        imageView.transform = transform.scaledBy(x: 1, y: 1)
+        UIView.commitAnimations()
+        completion?()
+    }
+    
+}
+
+
+class ExampleAnimateTipsContentView: ExampleBouncesContentView {
+    
+    override func badgeChangedAnimation(animated: Bool, completion: (() -> ())?) {
+        super.badgeChangedAnimation(animated: animated, completion: nil)
+        notificationAnimation()
+    }
+    
+    func notificationAnimation() {
+        let impliesAnimation = CAKeyframeAnimation(keyPath: "transform.translation.y")
+        impliesAnimation.values = [0.0 ,-8.0, 4.0, -4.0, 3.0, -2.0, 0.0]
+        impliesAnimation.duration = duration * 2
+        impliesAnimation.calculationMode = kCAAnimationCubic
+        
+        imageView.layer.add(impliesAnimation, forKey: nil)
+    }
+}
+
+class ExampleAnimateTipsContentView2: ExampleAnimateTipsContentView {
+    
+    override func notificationAnimation() {
+        let impliesAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
+        impliesAnimation.values = [1.0 ,1.4, 0.9, 1.15, 0.95, 1.02, 1.0]
+        impliesAnimation.duration = duration * 2
+        impliesAnimation.calculationMode = kCAAnimationCubic
+        self.badgeView.layer.add(impliesAnimation, forKey: nil)
+    }
 }
