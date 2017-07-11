@@ -8,7 +8,7 @@ s.license           = { :type => 'MIT', :file => 'LICENSE' }
 s.authors           = { 'lihao' => 'lihao_ios@hotmail.com'}
 s.social_media_url  = 'https://github.com/eggswift'
 s.platform          = :ios, '8.0'
-s.source            = {:git => 'https://github.com/eggswift/ESTabBarController.git', :tag => s.version}
+s.source            = {:git => 'https://github.com/sstefanov94/ESTabBarController.git'}
 s.source_files      = ['Sources/**/*.{swift}']
 s.requires_arc      = true
 end
