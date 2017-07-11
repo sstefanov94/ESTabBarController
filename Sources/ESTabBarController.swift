@@ -2,7 +2,7 @@
 //  ESTabBarController.swift
 //
 //  Created by Vincent Li on 2017/2/8.
-//  Copyright (c) 2013-2017 ESTabBarController (https://github.com/eggswift/ESTabBarController)
+//  Copyright (c) 2013-2016 ESTabBarController (https://github.com/eggswift/ESTabBarController)
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -43,10 +43,10 @@ open class ESTabBarController: UITabBarController, ESTabBarDelegate {
     open static func isShowingMore(_ tabBarController: UITabBarController?) -> Bool {
         return tabBarController?.moreNavigationController.parent != nil
     }
-
+    
     /// Ignore next selection or not.
     fileprivate var ignoreNextSelection = false
-
+    
     /// Should hijack select action or not.
     open var shouldHijackHandler: ESTabBarControllerShouldHijackHandler?
     /// Hijack select action.
@@ -89,16 +89,18 @@ open class ESTabBarController: UITabBarController, ESTabBarDelegate {
     /// Customize set tabBar use KVC.
     open override func viewDidLoad() {
         super.viewDidLoad()
-        let tabBar = { () -> ESTabBar in 
+        let tabBar = { () -> ESTabBar in
             let tabBar = ESTabBar()
             tabBar.delegate = self
             tabBar.customDelegate = self
             tabBar.tabBarController = self
+            tabBar.backgroundImage = UIImage()
+            tabBar.backgroundColor = UIColor.white.withAlphaComponent(0.3)
             return tabBar
         }()
         self.setValue(tabBar, forKey: "tabBar")
     }
-
+    
     // MARK: - UITabBar delegate
     open override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         guard let idx = tabBar.items?.index(of: item) else {
